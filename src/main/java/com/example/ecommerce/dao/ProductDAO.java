@@ -1,10 +1,10 @@
 package com.example.ecommerce.dao;
 
-import com.example.ecommerce.entity.ProductDetails;
+import com.example.ecommerce.entity.Product;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductDAO extends CrudRepository<ProductDetails,Integer> {
+public interface ProductDAO extends CrudRepository<Product,Integer> {
 
 }
