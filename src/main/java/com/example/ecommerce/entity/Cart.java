@@ -20,7 +20,7 @@ public class Cart {
     }
 
     public Cart() {
-        
+
     }
 
     public Integer getCartId() {
