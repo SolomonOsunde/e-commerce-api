@@ -21,17 +21,17 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserData registerNewUser(UserData userData){
-        Role userRole = roleDao.findById("User").get();
-
-        Set<Role> roles =new HashSet<>();
-        roles.add(userRole);
-
-        userData.setRole(roles);
-        userData.setPassword(getEncodedPassword(userData.getPassword()));
-
-       return userDao.save(userData);
-    }
+//    public UserData registerNewUser(UserData userData){
+//        Role userRole = roleDao.findById("User").get();
+//
+//        Set<Role> roles =new HashSet<>();
+//        roles.add(userRole);
+//
+//        userData.setRole(roles);
+//        userData.setPassword(getEncodedPassword(userData.getPassword()));
+//
+//       return userDao.save(userData);
+//    }
 
     public void initRolesAndUsers(){
         Role adminRole = new Role();
@@ -64,6 +64,20 @@ public class UserService {
         user_data.setRole(userRoles);
         userDao.save(user_data);
 
+    }
+    public UserData registerNewUser(UserData user){
+
+        Role userRole = roleDao.findById("User").get();
+
+        Set<Role> roleSet = new HashSet<>();
+        roleSet.add(userRole);
+        user.setRole(roleSet);
+
+        String encodedPassword = getEncodedPassword(user.getPassword());
+        user.setPassword(encodedPassword);
+
+
+        return userDao.save(user);
     }
 
     public String getEncodedPassword(String password){
