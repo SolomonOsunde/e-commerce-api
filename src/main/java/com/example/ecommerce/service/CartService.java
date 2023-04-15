@@ -10,6 +10,8 @@ import com.example.ecommerce.entity.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CartService {
 
@@ -35,5 +37,12 @@ public class CartService {
         }else {
             return null;
         }
+    }
+
+    public List<Cart> getCartList(){
+        String userName = JwtRequestFilter.CURRENT_USER;
+        UserData user = userDao.findById(userName).get();
+
+        return cartDao.findByUser(user);
     }
 }

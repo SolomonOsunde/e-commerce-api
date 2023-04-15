@@ -12,11 +12,11 @@ public class Cart {
     @OneToOne
     private Product product;
     @OneToOne
-    private UserData userData;
+    private UserData user;
 
-    public Cart(Product product, UserData userData) {
+    public Cart(Product product, UserData user) {
         this.product = product;
-        this.userData = userData;
+        this.user = user;
     }
 
     public Cart() {
@@ -39,11 +39,11 @@ public class Cart {
         this.product = product;
     }
 
-    public UserData getUserData() {
-        return userData;
+    public UserData getUser() {
+        return user;
     }
 
-    public void setUserData(UserData userData) {
-        this.userData = userData;
+    public void setUser(UserData userData) {
+        this.user = userData;
     }
 }

@@ -1,8 +1,13 @@
 package com.example.ecommerce.service;
 
+import com.example.ecommerce.configuration.JwtRequestFilter;
+import com.example.ecommerce.dao.CartDao;
 import com.example.ecommerce.dao.ProductDAO;
+import com.example.ecommerce.dao.UserDao;
+import com.example.ecommerce.entity.Cart;
 import com.example.ecommerce.entity.ImageModel;
 import com.example.ecommerce.entity.Product;
+import com.example.ecommerce.entity.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,11 +19,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
     @Autowired
     private ProductDAO productDAO;
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private CartDao cartDao;
 
     public Product addNewProduct(Product product){
         return productDAO.save(product);
@@ -57,8 +67,8 @@ public class ProductService {
         productDAO.deleteById(productId);
     }
     public List<Product> getProductDetails(boolean isSingleProductCheckout, Integer productId){
-        if(isSingleProductCheckout){
-            //we are going to buy a product
+        if(isSingleProductCheckout && productId != 0){
+            //we are going to buy a single product
             List<Product> list =new ArrayList<>();
             Product product = productDAO.findById(productId).get();
             list.add(product);
@@ -66,8 +76,15 @@ public class ProductService {
 
         }else{
             //we are going to check out the entire cart
+            String currentUser = JwtRequestFilter.CURRENT_USER;
+            UserData user = userDao.findById(currentUser).get();
+
+            List<Cart> userCart = cartDao.findByUser(user);
+
+           return userCart.stream()
+                    .map(x ->x.getProduct())
+                    .collect(Collectors.toList());
         }
-        return new ArrayList<>();
     }
 
 }
