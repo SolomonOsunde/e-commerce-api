@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CartService {
@@ -29,6 +30,14 @@ public class CartService {
         if(currentUser != null) {
             user = userDao.findById(currentUser).get();
         }
+        List<Cart> cartList = cartDao.findByUser(user);
+        List<Cart> filteredList = cartList.stream()
+                .filter(x -> x.getProduct().getProductId() == productId)
+                .collect(Collectors.toList());
+
+        if(filteredList.size() > 0){
+            return null;
+        }
 
         if(product != null && user != null){
             Cart cart = new Cart(product,user);
@@ -44,5 +53,9 @@ public class CartService {
         UserData user = userDao.findById(userName).get();
 
         return cartDao.findByUser(user);
+    }
+    
+    public void deleteCartItem(Integer cartId){
+        cartDao.deleteById(cartId);
     }
 }
