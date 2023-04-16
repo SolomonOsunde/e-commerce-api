@@ -6,6 +6,9 @@ import com.example.ecommerce.dao.OrderDetailDAO;
 import com.example.ecommerce.dao.ProductDAO;
 import com.example.ecommerce.dao.UserDao;
 import com.example.ecommerce.entity.*;
+import com.razorpay.Order;
+import com.razorpay.RazorpayClient;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,11 @@ import java.util.List;
 public class OrderDetailsService {
 
     private static final String ORDER_PLACED = "Placed Order";
+    private static final String KEY = "rzp_test_kcpmRWwxH5eoo1";
+    private static final String KEY_SECRET= "CMtMUUoDjWDG8JWveuLLMkAY";
+    private static final String CURRENCY= "INR";
+
+
     @Autowired
     private OrderDetailDAO orderDetailDAO;
 
@@ -86,6 +94,35 @@ public class OrderDetailsService {
             orderDetails.setOrderStatus("Delivered");
             orderDetailDAO.save(orderDetails);
         }
+    }
+    public TransactionDetails createTransaction(Double amount){
+     try {
+
+         JSONObject jsonObject = new JSONObject();
+         jsonObject.put("amount",(amount * 100));
+         jsonObject.put("currency",CURRENCY);
+
+         RazorpayClient razorpayClient = new RazorpayClient(KEY,KEY_SECRET);
+
+         Order order = razorpayClient.orders.create(jsonObject);
+         return prepareTransactionDetails(order);
+
+
+     }catch (Exception e){
+         System.out.println(e.getMessage());
+
+     }
+        return null;
+    }
+
+    private TransactionDetails prepareTransactionDetails(Order order){
+        String orderId = order.get("id");
+        String currency = order.get("currency");
+        Integer amount = order.get("amount");
+
+        TransactionDetails transactionDetails = new TransactionDetails(orderId,currency,amount);
+        return transactionDetails;
+
     }
 }
 

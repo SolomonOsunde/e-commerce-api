@@ -2,6 +2,7 @@ package com.example.ecommerce.controller;
 
 import com.example.ecommerce.entity.OrderDetails;
 import com.example.ecommerce.entity.OrderInput;
+import com.example.ecommerce.entity.TransactionDetails;
 import com.example.ecommerce.service.OrderDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,5 +37,11 @@ public class OrderDetailsController {
     @GetMapping({"/markOrderAsDelivered/{orderId}"})
     public void markOrderAsDelivered(@PathVariable(name = "orderId")Integer orderId){
         orderDetailsService.markOrderAsDelivered(orderId);
+    }
+
+    @PreAuthorize("hasRole('User')")
+    @GetMapping({"/createTransaction/{amount)"})
+    public TransactionDetails createTransaction(@PathVariable(name = "amount") Double amount){
+        return orderDetailsService.createTransaction(amount);
     }
 }
